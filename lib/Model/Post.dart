@@ -1,24 +1,59 @@
-class Post {
-  int? id;
-  String? employee_name;
-  String? employee_salary;
-  String? employee_age;
-  String? profile_image;
+import 'dart:convert';
 
-  Post({this.id, this.employee_name, this.employee_salary, this.employee_age, this.profile_image});
+EmpResponse empResponseFromJson(String str) => EmpResponse.fromJson(json.decode(str));
 
-  Post.fromJson(Map<String, dynamic> json)
-      : id = json['id'],
-        employee_name = json['employee_name'],
-        employee_salary = json['employee_salary'],
-        employee_age = json['employee_age'],
-        profile_image = json['profile_image'];
+String empResponseToJson(EmpResponse data) => json.encode(data.toJson());
+
+class EmpResponse {
+  EmpResponse({
+    this.status,
+    this.data,
+    this.message,
+  });
+
+  String? status;
+  List<Employee>? data;
+  String? message;
+
+  factory EmpResponse.fromJson(Map<String, dynamic> json) => EmpResponse(
+    status: json["status"],
+    data: List<Employee>.from(json["data"].map((x) => Employee.fromJson(x))),
+    message: json["message"],
+  );
 
   Map<String, dynamic> toJson() => {
-    'id': id,
-    'employee_name': employee_name,
-    'employee_salary': employee_salary,
-    'employee_age': employee_age,
-    'profile_image': profile_image,
+    "status": status,
+    "data": List<dynamic>.from(data!.map((x) => x.toJson())),
+    "message": message,
+  };
+}
+
+class Employee {
+  final int id;
+  final String? employeeName;
+  final int employeeAge;
+  final double employeeSalary;
+
+  Employee({
+    required this.id,
+    this.employeeName,
+    required this.employeeAge,
+    required this.employeeSalary,
+  });
+
+  factory Employee.fromJson(Map<String, dynamic> json) {
+    return Employee(
+      id: json['id'],
+      employeeName: json['employee_name'],
+      employeeAge: json['employee_age'],
+      employeeSalary: json['employee_salary'].toDouble(),
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+    "id": id,
+    "employee_name": employeeName,
+    "employee_age": employeeAge,
+    "employee_salary": employeeSalary,
   };
 }
